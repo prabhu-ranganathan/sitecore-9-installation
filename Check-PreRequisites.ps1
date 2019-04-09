@@ -22,6 +22,7 @@ $hwRAMCheckPassed = $false
 $OSCheckPassed = $false
 $PowershellPassed=$false
 $IISCheckPassed = $false
+$WebDeployCheckPassed=$false
 $DotnetCheckPassed = $false
 $SQLCheckPassed = $false
 $JAVACheckPassed = $false
@@ -197,6 +198,20 @@ else {
     Write-Host "X IIS version 8.5+  not installed!" -ForegroundColor Red
 }
 
+########## Check Webdeploy version 3+ */
+Write-Host
+Write-Host
+Write-Host "CHECKING FOR Webdeploy VERSION 3+..." -ForegroundColor Cyan
+Write-Host "________________________________" -ForegroundColor Cyan
+$webdeployversion = "hklm:\SOFTWARE\Microsoft\IIS Extensions\MSDeploy\3"
+if (Get-itemproperty $webdeployversion -Name InstallPath -ErrorAction SilentlyContinue) {
+    Write-Host "+ Webdeploy version 3+ installed." -ForegroundColor Green
+    $WebDeployCheckPassed = $true
+}
+else {
+    Write-Host "X Webdeploy version 3+  not installed!" -ForegroundColor Red
+}
+
 ########## Check Powershell version 5.1+ */
 Write-Host 
 Write-Host
@@ -325,7 +340,7 @@ if (Get-Module -ListAvailable -Name  SitecoreInstallFramework) {
 else {
    
     Write-Host "Registering SitecoreInstallFramework module..." -ForegroundColor Yellow
-    Install-Module SitecoreInstallFramework
+    Install-Module -Name SitecoreInstallFramework -Repository SitecoreGallery -RequiredVersion 1.2.1
     Write-Host "+ SitecoreInstallFramework registered!" -ForegroundColor Green
 }
 # Install the Sitecore Fundamentals module (provides additional functionality for local installations like creating self-signed certificates)
@@ -342,7 +357,7 @@ else {
 Write-Host
 Write-Host "______________________________________________" -ForegroundColor Cyan 
 Write-Host
-if ($HwCoresCheckPassed -and $HwRAMCheckPassed -and $OSCheckPassed -and $IISCheckPassed -and $PowershellPassed -and $DotnetCheckPassed -and $SQLCheckPassed -and $JAVACheckPassed -and $JREEnvPathPassed -and $FilePermissionsTempPassed -and $FilePermissionsGlobalizationPassed -and $FilePermissionsMSCryptoPassed) {
+if ($HwCoresCheckPassed -and $HwRAMCheckPassed -and $OSCheckPassed -and $IISCheckPassed -and $WebDeployCheckPassed -and $PowershellPassed -and $DotnetCheckPassed -and $SQLCheckPassed -and $JAVACheckPassed -and $JREEnvPathPassed -and $FilePermissionsTempPassed -and $FilePermissionsGlobalizationPassed -and $FilePermissionsMSCryptoPassed) {
     Write-Host "+ This machine is ready to for Sitecore 9!" -ForegroundColor Green
 }
 else {
