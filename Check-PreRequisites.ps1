@@ -246,7 +246,7 @@ Write-Host
 Write-Host
 Write-Host "CHECKING FOR JAVARUNTIME 1.8+ ..." -ForegroundColor Cyan
 Write-Host "_________________________________" -ForegroundColor Cyan
-$javaver = Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment" -Name CurrentVersion
+$javaver = Get-ItemProperty -Path "HKLM:\SOFTWARE\JavaSoft\Java Runtime Environment" -Name CurrentVersion
 if ($javaver.CurrentVersion -ge 1.8) {
     Write-Host "+ JavaRuntime 1.8+ installed" -ForegroundColor Green
     $javaCheckPassed = $true
