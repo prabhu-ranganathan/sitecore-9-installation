@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Checks the machine for Sitecore 9 compatibility.
 
@@ -20,6 +20,7 @@ https://www.sitecoregabe.com/2018/04/sitecore-9-machine-prerequisites-check.html
 $HwCoresCheckPassed = $false
 $hwRAMCheckPassed = $false
 $OSCheckPassed = $false
+$PowershellPassed=$false
 $IISCheckPassed = $false
 $DotnetCheckPassed = $false
 $SQLCheckPassed = $false
@@ -30,7 +31,7 @@ $FilePermissionsGlobalizationPassed = $false
 $FilePermissionsMSCryptoPassed = $false
 
 #Hardware setup
-$noOfcores = 4
+$noOfcores = 2
 $ramInGB = 8.0
 
 ########## Checking number of cores */
@@ -196,6 +197,19 @@ else {
     Write-Host "X IIS version 8.5+  not installed!" -ForegroundColor Red
 }
 
+########## Check Powershell version 5.1+ */
+Write-Host 
+Write-Host
+Write-Host "CHECKING POWERSHELL COMPATIBILITY..." -ForegroundColor Cyan
+Write-Host "________________________________________" -ForegroundColor Cyan
+if(($PSVersionTable.PSVersion.Major -ge 5) -and ($PSVersionTable.PSVersion.Minor -ge 1)){
+    Write-Host "+ POWERSHELL version 5.1+ installed." -ForegroundColor Green
+    $PowershellPassed=$true
+}
+else{
+    Write-Host "X Powershell version 5.1+  not installed!" -ForegroundColor Red
+}
+
 ########## .NET COMPATIBILITY CHECK
 Write-Host 
 Write-Host
@@ -220,14 +234,14 @@ foreach ($i in $inst) {
 
     if ([Version]$sqlV -ge [Version]"13.0.4001.0") {
         Write-Host "+ Valid SQL Version detected: " $sqlV "|" $i "|" $p  -ForegroundColor Green
-        Write-Host "Microsoft SQL Server 2014 SP2: This version only supports XM databases and does not support the Experience Database (xDB)." -ForegroundColor DarkGreen
+        Write-Host "Microsoft SQL Server 2016 SP1+: This version supports the XM databases and is the required and only supported version for the Experience Database (xDB)." -ForegroundColor DarkGreen
         $sqlCorrect = $true
         $SQLCheckPassed = $true
     }
 
     elseif ([Version]$sqlV -ge [Version]"12.0.5000.0") {
         Write-Host "+ Valid SQL Version detected: " $sqlV "|" $i "|" $p -ForegroundColor Green
-        Write-Host "Microsoft SQL Server 2016 SP1+: This version supports the XM databases and is the required and only supported version for the Experience Database (xDB)." -ForegroundColor DarkGreen
+        Write-Host "Microsoft SQL Server 2014 SP2: This version only supports XM databases and does not support the Experience Database (xDB)." -ForegroundColor DarkGreen
         $sqlCorrect = $true
         $SQLCheckPassed = $true
     }
@@ -301,13 +315,15 @@ Write-Host "_______________" -ForegroundColor Cyan
 # NOTE: I've been running into an issue registering HTTPS based repositories in what appears to be a PowerShell bug.
 # The work around is to register the Register-PSRepositoryFix function as answered here and use it below https://stackoverflow.com/questions/35296482/invalid-web-uri-error-on-register-psrepository 
 #.\Register-PSRepositoryFix -Name SitecoreGallery -SourceLocation https://sitecore.myget.org/F/sc-powershell/api/v2
-Register-PSRepository -Name SitecoreGallery -SourceLocation https://sitecore.myget.org/F/sc-powershell/api/v2
-
+ if(-Not (Get-PSRepository -Name SitecoreGallery -ErrorAction SilentlyContinue)){ 
+ Register-PSRepository -Name SitecoreGallery -SourceLocation https://sitecore.myget.org/F/sc-powershell/api/v2
+ }
 # Install the Sitecore Install Framwork module
 if (Get-Module -ListAvailable -Name  SitecoreInstallFramework) {
     Write-Host "+ SitecoreInstallFramework module is already registered!" -ForegroundColor Green
 } 
 else {
+   
     Write-Host "Registering SitecoreInstallFramework module..." -ForegroundColor Yellow
     Install-Module SitecoreInstallFramework
     Write-Host "+ SitecoreInstallFramework registered!" -ForegroundColor Green
@@ -326,7 +342,7 @@ else {
 Write-Host
 Write-Host "______________________________________________" -ForegroundColor Cyan 
 Write-Host
-if ($HwCoresCheckPassed -and $HwRAMCheckPassed -and $OSCheckPassed -and $IISCheckPassed -and $DotnetCheckPassed -and $SQLCheckPassed -and $JAVACheckPassed -and $JREEnvPathPassed -and $FilePermissionsTempPassed -and $FilePermissionsGlobalizationPassed -and $FilePermissionsMSCryptoPassed) {
+if ($HwCoresCheckPassed -and $HwRAMCheckPassed -and $OSCheckPassed -and $IISCheckPassed -and $PowershellPassed -and $DotnetCheckPassed -and $SQLCheckPassed -and $JAVACheckPassed -and $JREEnvPathPassed -and $FilePermissionsTempPassed -and $FilePermissionsGlobalizationPassed -and $FilePermissionsMSCryptoPassed) {
     Write-Host "+ This machine is ready to for Sitecore 9!" -ForegroundColor Green
 }
 else {
