@@ -1,13 +1,25 @@
-#define parameters
-$prefix = "sc901"
+<#
+    Define the parameters going to used in the project here.
+    All the parameters in the Project must be refered from here.
+#>
+[string]$Version = '6.6.2'
+[string]$NssmVersion = '2.24'
+[string]$Jre = 'jre1.8.0_201'
+[int]$Port = 8983
+[string]$HostName = 'localhost'
+[ValidateScript( { Test-Path $_ -Type Container })]
+[string]$DownloadPath = (Resolve-Path ~/Downloads)
+[ValidateScript( { Test-Path $_ -Type Container })]
+[string]$InstallPath = (Join-Path $env:SystemDrive '\')
+$prefix = "sc902"
 $XConnectCollectionService = "$prefix.xconnect"
 $sitecoreSiteName = "$prefix.sc"
-$SolrUrl = "https://localhost:8983/solr"
-$SolrRoot = "C:\Solr\6.6.2"
-$SolrService = "Solr-6.6.2"
-$SqlServer = "CHL117109"
+$SolrUrl = "https://$($HostName):$Port/solr"
+$SolrRoot = "C:\Solr\$Version"
+$SolrService = "Solr-$Version"
+$SqlServer = "localhost"
 $SqlAdminUser = "sa"
-$SqlAdminPassword = "Password"
+$SqlAdminPassword = "12345"
 $configsRoot = Join-Path $PSScriptRoot Configs
 $packagesRoot = Join-Path $PSScriptRoot Packages
 $licenseFilePath = Join-Path $PSScriptRoot license.xml
