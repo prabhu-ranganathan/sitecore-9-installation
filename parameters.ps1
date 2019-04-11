@@ -42,7 +42,7 @@ $xConnectSolrParams = @{
 #deploy xconnect instance
 $xconnectParams = @{
     Path             = Join-Path $configsRoot xconnect-xp0.json
-    Package          = Join-Path $packagesRoot 'Sitecore 9.0.2 rev. 180604 (OnPrem)_xp0xconnect.scwdp.zip'
+    Package          = Join-Path $packagesRoot 'Sitecore 9.0.1 rev. 171219 (OnPrem)_xp0xconnect.scwdp'
     LicenseFile      = $licenseFilePath
     Sitename         = $XConnectCollectionService
     XConnectCert     = $certParams.CertificateName
@@ -66,7 +66,7 @@ $solrParams = @{
 #install sitecore instance
 $sitecoreParams = @{
     Path                      = Join-Path $configsRoot sitecore-XP0.json
-    Package                   = Join-Path $packagesRoot 'Sitecore 9.0.2 rev. 180604 (OnPrem)_single.scwdp.zip'
+    Package                   = Join-Path $packagesRoot 'Sitecore 9.0.1 rev. 171219 (OnPrem)_single.scwdp.zip'
     LicenseFile               = $licenseFilePath
     SqlDbPrefix               = $prefix
     SqlServer                 = $SqlServer
