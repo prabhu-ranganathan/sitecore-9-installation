@@ -345,7 +345,7 @@ if (Get-Module -ListAvailable -Name SitecoreFundamentals) {
 } 
 else {
     Write-Host "Registering SitecoreFundamentals module..." -ForegroundColor Yellow
-    Install-Module -Name SitecoreInstallFramework -Repository SitecoreGallery -RequiredVersion 1.2.1
+    Install-Module SitecoreFundamentals
     Write-Host "+ SitecoreFundamentals registered!" -ForegroundColor Green
 }
 
